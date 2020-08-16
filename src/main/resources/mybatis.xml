@@ -7,8 +7,12 @@
     <properties resource="jdbc.properties"/>
 
     <typeAliases>
+
         <package name="com.snakyhy.crm.settings.domain"/>
+        <package name="com.snakyhy.crm.workbench.domain"/>
+
     </typeAliases>
+
 
     <environments default="mydev">
     <environment id="mydev">
@@ -24,7 +28,9 @@
 
 
     <mappers>
+
         <package name="com.snakyhy.crm.settings.dao"/>
+        <package name="com.snakyhy.crm.workbench.dao"/>
         <!--<mapper resource="com/snakyhy/dao/SchoolDao.xml" />-->
     </mappers>
 </configuration>

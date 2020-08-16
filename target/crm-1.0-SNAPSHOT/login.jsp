@@ -13,6 +13,10 @@
 	<script>
 		$(function () {
 
+			if(window.top!=window){
+				window.top.location=window.location;
+			}
+
 			//页面加载完毕后，将网页表内数据清空
 			$("#loginAct").val("");
 			//页面加载完毕后，用户文本框自动获得焦点
