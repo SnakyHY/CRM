@@ -4,6 +4,7 @@ import com.snakyhy.crm.settings.domain.User;
 import com.snakyhy.crm.settings.service.UserService;
 import com.snakyhy.crm.settings.service.impl.UserServiceImpl;
 import com.snakyhy.crm.utils.*;
+import com.snakyhy.crm.vo.PaginationVO;
 import com.snakyhy.crm.workbench.domain.Activity;
 import com.snakyhy.crm.workbench.service.ActivityService;
 import com.snakyhy.crm.workbench.service.impl.ActivityServiceImpl;
@@ -31,7 +32,62 @@ public class ActivityController extends HttpServlet {
         }else if ("/workbench/activity/save.do".equals(path)){
 
             save(request,response);
+
+        }else if ("/workbench/activity/pageList.do".equals(path)){
+
+            pageList(request,response);
+
+        }else if ("/workbench/activity/delete.do".equals(path)){
+
+            delete(request,response);
         }
+    }
+
+    private void delete(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("执行市场的删除操作");
+
+        String[] ids=request.getParameterValues("id");
+
+        ActivityService as= (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+
+    }
+
+    private void pageList(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("进入到获得市场信息查询列表的操作(分页）");
+
+        String name=request.getParameter("name");
+        String owner=request.getParameter("owner");
+        String startDate=request.getParameter("startDate");
+        String endDate=request.getParameter("endDate");
+
+        //sql的limit(0,5)第一个数字为略过的数据条数，第二个为每一页的数据行数
+        //页数
+        String pageNoStr=request.getParameter("pageNo");
+        int pageNo=Integer.valueOf(pageNoStr);
+        //每页的数据行数
+        String pageSizeStr=request.getParameter("pageSize");
+        int pageSize=Integer.valueOf(pageSizeStr);
+
+        //计算出略过的记录数
+        int skipCount=pageSize*(pageNo-1);
+
+        Map<String,Object> map=new HashMap<>();
+        map.put("name", name);
+        map.put("owner", owner);
+        map.put("startDate", startDate);
+        map.put("endDate", endDate);
+        map.put("skipCount", skipCount);
+        map.put("pageSize", pageSize);
+
+        ActivityService as= (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+
+        //为了实现代码复用，选择从业务层返回vo对象（范型复用）
+        PaginationVO<Activity> vo=as.pageList(map);
+
+        PrintJson.printJsonObj(response, vo);
+
     }
 
     private void save(HttpServletRequest request, HttpServletResponse response) {
