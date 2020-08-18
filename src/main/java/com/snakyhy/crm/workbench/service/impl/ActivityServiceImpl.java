@@ -7,6 +7,7 @@ import com.snakyhy.crm.vo.PaginationVO;
 import com.snakyhy.crm.workbench.dao.ActivityDao;
 import com.snakyhy.crm.workbench.dao.ActivityRemarkDao;
 import com.snakyhy.crm.workbench.domain.Activity;
+import com.snakyhy.crm.workbench.domain.ActivityRemark;
 import com.snakyhy.crm.workbench.service.ActivityService;
 
 import java.util.HashMap;
@@ -105,5 +106,67 @@ public class ActivityServiceImpl implements ActivityService {
         }
         return flag;
 
+    }
+
+
+    public Activity detail(String id) {
+
+        Activity a=activityDao.detail(id);
+
+        return a;
+    }
+
+
+    public List<ActivityRemark> getRemarkListByAid(String id) {
+
+        List<ActivityRemark> arList=activityRemarkDao.getRemarkListByAid(id);
+
+        return arList;
+    }
+
+
+    public boolean deleteRemark(String id) {
+
+        boolean flag=true;
+
+        int count=activityRemarkDao.deleteById(id);
+
+        if(count!=1){
+            flag=false;
+        }
+
+        return flag;
+    }
+
+
+    public boolean saveRemark(ActivityRemark ar) {
+
+        boolean flag=true;
+
+        int count=activityRemarkDao.saveRemark(ar);
+
+        if(count!=1){
+
+            flag=false;
+
+        }
+
+        return flag;
+    }
+
+
+    public boolean updateRemark(ActivityRemark ar) {
+
+        boolean flag=true;
+
+        int count=activityRemarkDao.updateRemark(ar);
+
+        if(count!=1){
+
+            flag=false;
+
+        }
+
+        return flag;
     }
 }

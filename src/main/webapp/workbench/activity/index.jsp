@@ -179,7 +179,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 
 			if($xz.length==0){
 
-				alert("请选择需要删除的用户")
+				alert("请选择需要删除的内容")
 
 			}else{
 
