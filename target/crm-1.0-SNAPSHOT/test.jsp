@@ -26,6 +26,8 @@
     //当前系统时间
     String createTime = DateTimeUtil.getSysTime();
     String createBy = ((User)request.getSession().getAttribute("user")).getName();
+
+    ActivityService as= (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
 </head>
 <body>
 
