@@ -1,4 +1,5 @@
 <%@page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
 %>
@@ -19,11 +20,42 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 <script type="text/javascript">
 
 	$(function(){
-		
-		
-		
+
+		//为创建按钮绑定事件，加载信息后打开模态窗口
+		$("#addBtn").click(function () {
+
+			//从后台中获得数据
+			$.ajax({
+
+				url:"workbench/clue/getUserList.do",
+				type:"get",
+				dataType:"json",
+				success:function (data) {
+
+					var html="<option></option>";
+
+					$.each(data,function (i,n) {
+						//n为每一个用户user
+						html+="<option value='"+n.id+"'>"+n.name+"</option>";
+					})
+
+					$("#create-owner").html(html);
+
+					//默认值设定为登录用户姓名
+					//el表达式在js中使用，一定要放在字符串中
+					var id="${sessionScope.user.id}"
+					$("#create-owner").val(id);
+
+					//显示该模态窗口
+					$("#createClueModal").modal("show");
+				}
+
+			})
+
+		})
+
 	});
-	
+
 </script>
 </head>
 <body>
@@ -40,14 +72,12 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal" role="form">
-					
+
 						<div class="form-group">
 							<label for="create-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-clueOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+								<select class="form-control" id="create-owner">
+
 								</select>
 							</div>
 							<label for="create-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
@@ -55,17 +85,16 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 								<input type="text" class="form-control" id="create-company">
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label for="create-call" class="col-sm-2 control-label">称呼</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-call">
+									<%--利用tglib遍历数据--%>
 								  <option></option>
-								  <option>先生</option>
-								  <option>夫人</option>
-								  <option>女士</option>
-								  <option>博士</option>
-								  <option>教授</option>
+									<c:forEach items="${appellationList}" var="a">
+										<option value="${a.value}">${a.text}</option>
+									</c:forEach>
 								</select>
 							</div>
 							<label for="create-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
@@ -73,7 +102,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 								<input type="text" class="form-control" id="create-surname">
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label for="create-job" class="col-sm-2 control-label">职位</label>
 							<div class="col-sm-10" style="width: 300px;">
@@ -84,7 +113,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 								<input type="text" class="form-control" id="create-email">
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label for="create-phone" class="col-sm-2 control-label">公司座机</label>
 							<div class="col-sm-10" style="width: 300px;">
@@ -95,7 +124,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 								<input type="text" class="form-control" id="create-website">
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label for="create-mphone" class="col-sm-2 control-label">手机</label>
 							<div class="col-sm-10" style="width: 300px;">
@@ -105,40 +134,29 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-status">
 								  <option></option>
-								  <option>试图联系</option>
-								  <option>将来联系</option>
-								  <option>已联系</option>
-								  <option>虚假线索</option>
-								  <option>丢失线索</option>
-								  <option>未联系</option>
-								  <option>需要条件</option>
+									<%--利用tglib遍历数据--%>
+									<option></option>
+									<c:forEach items="${clueStateList}" var="c">
+										<option value="${c.value}">${c.text}</option>
+									</c:forEach>
 								</select>
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label for="create-source" class="col-sm-2 control-label">线索来源</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-source">
 								  <option></option>
-								  <option>广告</option>
-								  <option>推销电话</option>
-								  <option>员工介绍</option>
-								  <option>外部介绍</option>
-								  <option>在线商场</option>
-								  <option>合作伙伴</option>
-								  <option>公开媒介</option>
-								  <option>销售邮件</option>
-								  <option>合作伙伴研讨会</option>
-								  <option>内部研讨会</option>
-								  <option>交易会</option>
-								  <option>web下载</option>
-								  <option>web调研</option>
-								  <option>聊天</option>
+									<%--利用tglib遍历数据--%>
+									<option></option>
+									<c:forEach items="${sourceList}" var="s">
+										<option value="${s.value}">${s.text}</option>
+									</c:forEach>
 								</select>
 							</div>
 						</div>
-						
+
 
 						<div class="form-group">
 							<label for="create-describe" class="col-sm-2 control-label">线索描述</label>
@@ -146,9 +164,9 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 								<textarea class="form-control" rows="3" id="create-describe"></textarea>
 							</div>
 						</div>
-						
+
 						<div style="height: 1px; width: 103%; background-color: #D5D5D5; left: -13px; position: relative;"></div>
-						
+
 						<div style="position: relative;top: 15px;">
 							<div class="form-group">
 								<label for="create-contactSummary" class="col-sm-2 control-label">联系纪要</label>
@@ -163,9 +181,9 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 								</div>
 							</div>
 						</div>
-						
+
 						<div style="height: 1px; width: 103%; background-color: #D5D5D5; left: -13px; position: relative; top : 10px;"></div>
-						
+
 						<div style="position: relative;top: 20px;">
 							<div class="form-group">
                                 <label for="create-address" class="col-sm-2 control-label">详细地址</label>
@@ -175,7 +193,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 							</div>
 						</div>
 					</form>
-					
+
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -184,7 +202,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- 修改线索的模态窗口 -->
 	<div class="modal fade" id="editClueModal" role="dialog">
 		<div class="modal-dialog" role="document" style="width: 90%;">
@@ -197,7 +215,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal" role="form">
-					
+
 						<div class="form-group">
 							<label for="edit-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
@@ -212,7 +230,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 								<input type="text" class="form-control" id="edit-company" value="动力节点">
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label for="edit-call" class="col-sm-2 control-label">称呼</label>
 							<div class="col-sm-10" style="width: 300px;">
@@ -230,7 +248,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 								<input type="text" class="form-control" id="edit-surname" value="李四">
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label for="edit-job" class="col-sm-2 control-label">职位</label>
 							<div class="col-sm-10" style="width: 300px;">
@@ -241,7 +259,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 								<input type="text" class="form-control" id="edit-email" value="lisi@bjpowernode.com">
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label for="edit-phone" class="col-sm-2 control-label">公司座机</label>
 							<div class="col-sm-10" style="width: 300px;">
@@ -252,7 +270,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 								<input type="text" class="form-control" id="edit-website" value="http://www.bjpowernode.com">
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label for="edit-mphone" class="col-sm-2 control-label">手机</label>
 							<div class="col-sm-10" style="width: 300px;">
@@ -272,7 +290,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 								</select>
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label for="edit-source" class="col-sm-2 control-label">线索来源</label>
 							<div class="col-sm-10" style="width: 300px;">
@@ -295,16 +313,16 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 								</select>
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label for="edit-describe" class="col-sm-2 control-label">描述</label>
 							<div class="col-sm-10" style="width: 81%;">
 								<textarea class="form-control" rows="3" id="edit-describe">这是一条线索的描述信息</textarea>
 							</div>
 						</div>
-						
+
 						<div style="height: 1px; width: 103%; background-color: #D5D5D5; left: -13px; position: relative;"></div>
-						
+
 						<div style="position: relative;top: 15px;">
 							<div class="form-group">
 								<label for="edit-contactSummary" class="col-sm-2 control-label">联系纪要</label>
@@ -319,7 +337,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 								</div>
 							</div>
 						</div>
-						
+
 						<div style="height: 1px; width: 103%; background-color: #D5D5D5; left: -13px; position: relative; top : 10px;"></div>
 
                         <div style="position: relative;top: 20px;">
@@ -331,7 +349,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
                             </div>
                         </div>
 					</form>
-					
+
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -340,10 +358,10 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 			</div>
 		</div>
 	</div>
-	
-	
-	
-	
+
+
+
+
 	<div>
 		<div style="position: relative; left: 10px; top: -10px;">
 			<div class="page-header">
@@ -351,35 +369,35 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 			</div>
 		</div>
 	</div>
-	
+
 	<div style="position: relative; top: -20px; left: 0px; width: 100%; height: 100%;">
-	
+
 		<div style="width: 100%; position: absolute;top: 5px; left: 10px;">
-		
+
 			<div class="btn-toolbar" role="toolbar" style="height: 80px;">
 				<form class="form-inline" role="form" style="position: relative;top: 8%; left: 5px;">
-				  
+
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">名称</div>
 				      <input class="form-control" type="text">
 				    </div>
 				  </div>
-				  
+
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">公司</div>
 				      <input class="form-control" type="text">
 				    </div>
 				  </div>
-				  
+
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">公司座机</div>
 				      <input class="form-control" type="text">
 				    </div>
 				  </div>
-				  
+
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">线索来源</div>
@@ -402,25 +420,25 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 					  </select>
 				    </div>
 				  </div>
-				  
+
 				  <br>
-				  
+
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">所有者</div>
 				      <input class="form-control" type="text">
 				    </div>
 				  </div>
-				  
-				  
-				  
+
+
+
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">手机</div>
 				      <input class="form-control" type="text">
 				    </div>
 				  </div>
-				  
+
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">线索状态</div>
@@ -438,17 +456,17 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 				  </div>
 
 				  <button type="submit" class="btn btn-default">查询</button>
-				  
+
 				</form>
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 40px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createClueModal"><span class="glyphicon glyphicon-plus"></span> 创建</button>
+				  <button type="button" class="btn btn-primary" id="addBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
 				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
-				
-				
+
+
 			</div>
 			<div style="position: relative;top: 50px;">
 				<table class="table table-hover">
@@ -488,7 +506,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 					</tbody>
 				</table>
 			</div>
-			
+
 			<div style="height: 50px; position: relative;top: 60px;">
 				<div>
 					<button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>
@@ -523,9 +541,9 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 					</nav>
 				</div>
 			</div>
-			
+
 		</div>
-		
+
 	</div>
 </body>
 </html>

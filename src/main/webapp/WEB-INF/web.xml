@@ -24,6 +24,10 @@
     <url-pattern>*.jsp</url-pattern>
   </filter-mapping>
 
+  <listener>
+    <listener-class>com.snakyhy.crm.web.listener.SysInitListener</listener-class>
+  </listener>
+
   <servlet>
     <servlet-name>UserController</servlet-name>
     <servlet-class>com.snakyhy.crm.settings.web.controller.UserController</servlet-class>
@@ -58,7 +62,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>ClueController</servlet-name>
-    <url-pattern>/workbench/clue/xxx.do</url-pattern>
+    <url-pattern>/workbench/clue/getUserList.do</url-pattern>
   </servlet-mapping>
   
 </web-app>

@@ -11,7 +11,9 @@ import com.snakyhy.crm.vo.PaginationVO;
 import com.snakyhy.crm.workbench.domain.Activity;
 import com.snakyhy.crm.workbench.domain.ActivityRemark;
 import com.snakyhy.crm.workbench.service.ActivityService;
+import com.snakyhy.crm.workbench.service.ClueService;
 import com.snakyhy.crm.workbench.service.impl.ActivityServiceImpl;
+import com.snakyhy.crm.workbench.service.impl.ClueServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,13 +31,25 @@ public class ClueController extends HttpServlet {
         System.out.println("进入到线索控制器");
         String path = request.getServletPath();
 
-        if ("/workbench/clue/xxx.do".equals(path)) {
+        if ("/workbench/clue/getUserList.do".equals(path)) {
 
+            getUserList(request,response);
 
         } else if ("/workbench/clue/xxx.do".equals(path)) {
 
 
         }
+    }
+
+    private void getUserList(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("获取用户信息列表");
+
+        UserService us= (UserService) ServiceFactory.getService(new UserServiceImpl());
+
+        List<User> uList=us.getUserList();
+
+        PrintJson.printJsonObj(response, uList);
     }
 }
 
