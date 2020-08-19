@@ -21,6 +21,17 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 
 	$(function(){
 
+		//时间控件
+		$(".time").datetimepicker({
+			minView: "month",
+			language:  'zh-CN',
+			format: 'yyyy-mm-dd',
+			autoclose: true,
+			todayBtn: true,
+			pickerPosition: "top-left"
+		});
+
+
 		//为创建按钮绑定事件，加载信息后打开模态窗口
 		$("#addBtn").click(function () {
 
@@ -48,6 +59,62 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 
 					//显示该模态窗口
 					$("#createClueModal").modal("show");
+				}
+
+			})
+
+		})
+
+		//为保存按钮绑定事件,执行添加操作
+		$("#saveBtn").click(function () {
+
+			$.ajax({
+
+				url:"workbench/clue/save.do",
+				data:{
+
+					"fullname":$.trim($("#create-fullname").val()),
+					"appellation":$.trim($("#create-appellation").val()),
+					"owner":$.trim($("#create-owner").val()),
+					"company":$.trim($("#create-company").val()),
+					"job":$.trim($("#create-job").val()),
+					"email":$.trim($("#create-email").val()),
+					"phone":$.trim($("#create-phone").val()),
+					"website":$.trim($("#create-website").val()),
+					"mphone":$.trim($("#create-mphone").val()),
+					"state":$.trim($("#create-state").val()),
+					"source":$.trim($("#create-source").val()),
+					"description":$.trim($("#create-description").val()),
+					"contactSummary":$.trim($("#create-contactSummary").val()),
+					"nextContactTime":$.trim($("#create-nextContactTime").val()),
+					"address":$.trim($("#create-address").val())
+
+
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data) {
+
+					/*
+						data
+							{"success":true/false}
+					 */
+
+					if(data.success){
+
+						//添加成功
+
+						//刷新列表 略
+						//pageList();
+
+						//关闭模态窗口
+						$("#createClueModal").modal("hide");
+
+					}else{
+
+						alert("添加线索信息失败");
+
+					}
 				}
 
 			})
@@ -89,7 +156,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 						<div class="form-group">
 							<label for="create-call" class="col-sm-2 control-label">称呼</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-call">
+								<select class="form-control" id="create-appellation">
 									<%--利用tglib遍历数据--%>
 								  <option></option>
 									<c:forEach items="${appellationList}" var="a">
@@ -99,7 +166,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 							</div>
 							<label for="create-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-surname">
+								<input type="text" class="form-control" id="create-fullname">
 							</div>
 						</div>
 
@@ -132,10 +199,9 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 							</div>
 							<label for="create-status" class="col-sm-2 control-label">线索状态</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-status">
+								<select class="form-control" id="create-state">
 								  <option></option>
 									<%--利用tglib遍历数据--%>
-									<option></option>
 									<c:forEach items="${clueStateList}" var="c">
 										<option value="${c.value}">${c.text}</option>
 									</c:forEach>
@@ -149,7 +215,6 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 								<select class="form-control" id="create-source">
 								  <option></option>
 									<%--利用tglib遍历数据--%>
-									<option></option>
 									<c:forEach items="${sourceList}" var="s">
 										<option value="${s.value}">${s.text}</option>
 									</c:forEach>
@@ -161,7 +226,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 						<div class="form-group">
 							<label for="create-describe" class="col-sm-2 control-label">线索描述</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="create-describe"></textarea>
+								<textarea class="form-control" rows="3" id="create-description"></textarea>
 							</div>
 						</div>
 
@@ -177,7 +242,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 							<div class="form-group">
 								<label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
 								<div class="col-sm-10" style="width: 300px;">
-									<input type="text" class="form-control" id="create-nextContactTime">
+									<input type="text" class="form-control time" id="create-nextContactTime">
 								</div>
 							</div>
 						</div>
@@ -197,7 +262,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+					<button type="button" class="btn btn-primary" id="saveBtn">保存</button>
 				</div>
 			</div>
 		</div>
@@ -485,7 +550,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 					<tbody>
 						<tr>
 							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/clue/detail.jsp';">李四先生</a></td>
+							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/clue/detail.do?id=2ab055aad07b482f84e377891fa959b7';">马云先生</a></td>
 							<td>动力节点</td>
 							<td>010-84846003</td>
 							<td>12345678901</td>
