@@ -230,5 +230,22 @@
         )
 
     </select>
+    
+    <select id="getActivityByName" resultType="Activity">
+
+        select
+
+        a.id,
+        a.name,
+        u.name as owner,
+        a.startDate,
+        a.endDate
+
+        from tbl_activity a
+        join tbl_user u
+        on a.owner=u.id
+
+        where a.name like '%' #{aname} '%'
+    </select>
 
 </mapper>
