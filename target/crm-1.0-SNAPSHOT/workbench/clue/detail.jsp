@@ -54,6 +54,122 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 
 		//页面加载完毕后，取出关联的市场活动列表
 		showActivityList();
+
+		//为关联市场活动的搜索框绑定事件，点击回车执行搜索
+		$("#aname").keydown(function (event) {
+
+			if(event.keyCode==13){
+
+				//查询并展现市场活动列表
+				$.ajax({
+					url:"workbench/clue/getActivityByNameAndNotByClueId.do",
+					data:{
+
+						"aname":$.trim($("#aname").val()),
+						"clueId":"${c.id}"
+
+					},
+					type:"get",
+					dataType:"json",
+					success:function (data) {
+
+						/*
+							data
+								[{市场活动1}，{2}，{3}]
+						 */
+
+						var html="";
+
+						$.each(data,function (i,n) {
+
+							html+='<tr>';
+							html+='<td><input type="checkbox" name="xz" value="'+n.id+'"/></td>';
+							html+='<td>'+n.name+'</td>';
+							html+='<td>'+n.startDate+'</td>';
+							html+='<td>'+n.endDate+'</td>';
+							html+='<td>'+n.owner+'</td>';
+							html+='</tr>';
+
+							/*alert(n.id)*/
+
+						})
+
+						$("#activitySearchBody").html(html);
+
+					}
+
+				})
+
+				//展现完，记得将强制刷新业面的回车行为禁止
+				return false;
+			}
+
+		})
+
+		//为关联按钮绑定添加操作
+		$("#bundBtn").click(function () {
+
+			var $xz=$("input[name=xz]:checked");
+
+			if($xz.length==0){
+
+				alert("请选择需要选择关联的活动")
+
+			}else{
+
+				//一条或多条
+				var param="cid=${c.id}&";
+
+				for(var i=0;i<$xz.length;i++){
+
+					param+="aid="+$($xz[i]).val();
+
+					if(i<$xz.length-1){
+
+						param+="&";
+
+					}
+				}
+
+				/*alert(param);*/
+
+				$.ajax({
+
+					url: "workbench/clue/bund.do?",
+					data: param,
+					type: "post",
+					dataType: "json",
+					success: function (data) {
+
+						/*
+							data
+								{"success":true/false}
+						 */
+						if(data.success){
+
+							//成功
+							//刷新关联活动的列表
+							showActivityList();
+
+							//清除搜索框中的内容 复选框内容 清空activitySearchBody内容
+							$("#aname").val("");
+							$("#qx").prop("checked",false);
+							$("#activitySearchBody").html("");
+
+							//关闭模态窗口
+							$("#bundModal").modal("hide");
+
+						}else{
+
+							alert("关联市场失败")
+						}
+
+					}
+				})
+
+			}
+		});
+
 	});
 	
 	function showActivityList() {
@@ -146,7 +262,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 					<div class="btn-group" style="position: relative; top: 18%; left: 8px;">
 						<form class="form-inline" role="form">
 						  <div class="form-group has-feedback">
-						    <input type="text" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
+						    <input type="text" class="form-control" style="width: 300px;" id="aname" placeholder="请输入市场活动名称，支持模糊查询">
 						    <span class="glyphicon glyphicon-search form-control-feedback"></span>
 						  </div>
 						</form>
@@ -154,7 +270,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 					<table id="activityTable" class="table table-hover" style="width: 900px; position: relative;top: 10px;">
 						<thead>
 							<tr style="color: #B3B3B3;">
-								<td><input type="checkbox"/></td>
+								<td><input type="checkbox" id="qx"/></td>
 								<td>名称</td>
 								<td>开始日期</td>
 								<td>结束日期</td>
@@ -162,8 +278,8 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 								<td></td>
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
+						<tbody id="activitySearchBody">
+							<%--<tr>
 								<td><input type="checkbox"/></td>
 								<td>发传单</td>
 								<td>2020-10-10</td>
@@ -176,13 +292,13 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 								<td>2020-10-10</td>
 								<td>2020-10-20</td>
 								<td>zhangsan</td>
-							</tr>
+							</tr>--%>
 						</tbody>
 					</table>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">关联</button>
+					<button type="button" class="btn btn-primary" id="bundBtn">关联</button>
 				</div>
 			</div>
 		</div>
