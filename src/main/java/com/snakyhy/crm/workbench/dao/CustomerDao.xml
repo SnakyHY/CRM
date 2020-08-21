@@ -44,6 +44,15 @@
 
         )
     </insert>
+
+    <select id="getCustomerName" resultType="String">
+
+        select name from tbl_customer
+
+        where
+
+        name like '%' #{name} '%'
+    </select>
   	
 </mapper>
 

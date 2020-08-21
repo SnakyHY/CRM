@@ -117,7 +117,7 @@ public class ClueController extends HttpServlet {
 
         if(flag1){
 
-            response.sendRedirect("/crm/workbench/clue/index.jsp");
+            response.sendRedirect(request.getContextPath()+"/workbench/clue/index.jsp");
         }
 
     }

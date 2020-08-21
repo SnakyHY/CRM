@@ -8,9 +8,7 @@ import com.snakyhy.crm.utils.ServiceFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class SysInitListener implements ServletContextListener {
 
@@ -45,6 +43,29 @@ public class SysInitListener implements ServletContextListener {
 
         }
 
+
+        //----------------------------------------------------------------
+        //处理Stage2Possibility配置文件
+        //处理成java中的键值对文件map
+
+        Map<String,String> pMap=new HashMap<>();
+        //解析properties文件
+        ResourceBundle rb=ResourceBundle.getBundle("Stage2Possibility");
+        Enumeration<String> e = rb.getKeys();
+
+        while (e.hasMoreElements()){
+
+            //阶段
+            String key=e.nextElement();
+            //可能性
+            String value=rb.getString(key);
+
+            pMap.put(key, value);
+
+        }
+
+        //放入到服务器缓存中
+        application.setAttribute("pMap",pMap);
 
 
     }
