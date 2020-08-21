@@ -220,6 +220,8 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 	<div id="create-transaction2" style="position: relative; left: 40px; top: 20px; width: 80%; background-color: #F7F7F7; display: none;" >
 	
 		<form id="tranForm" action="workbench/clue/convert.do" method="post">
+			<%--标记--%>
+			<input type="hidden" name="flag" value="a"/>
 			<input type="hidden" value="${param.id}" name="clueId"/>
 		  <div class="form-group" style="width: 400px; position: relative; left: 20px;">
 		    <label for="amountOfMoney">金额</label>
