@@ -59,7 +59,23 @@ public class TranController extends HttpServlet {
 
             changeStage(request,response);
 
+        }else if ("/workbench/transaction/getCharts.do".equals(path)) {
+
+            getCharts(request,response);
+
         }
+    }
+
+    private void getCharts(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("获取交易阶段数据，制作图表");
+
+        TranService ts= (TranService) ServiceFactory.getService(new TranServiceImpl());
+
+        Map<String,Object> map=ts.getCharts();
+
+        PrintJson.printJsonObj(response, map);
+
     }
 
     private void changeStage(HttpServletRequest request, HttpServletResponse response) {

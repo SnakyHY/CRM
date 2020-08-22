@@ -11,7 +11,9 @@ import com.snakyhy.crm.workbench.domain.Tran;
 import com.snakyhy.crm.workbench.domain.TranHistory;
 import com.snakyhy.crm.workbench.service.TranService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TranServiceImpl implements TranService {
 
@@ -126,5 +128,22 @@ public class TranServiceImpl implements TranService {
         }
 
         return flag;
+    }
+
+    @Override
+    public Map<String, Object> getCharts() {
+
+        Map<String,Object> map=new HashMap<>();
+
+        //取得total
+        int total=tranDao.getTotal();
+
+        //取得dataList
+        List<Map<String,Object>> dataList=tranDao.getCharts();
+
+        //封装到map中
+        map.put("total", total);
+        map.put("dataList",dataList);
+        return map;
     }
 }
